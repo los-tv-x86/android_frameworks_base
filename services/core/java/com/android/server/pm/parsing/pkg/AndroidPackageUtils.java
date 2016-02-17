@@ -161,7 +161,7 @@ public class AndroidPackageUtils {
                 pkg.isMultiArch(),
                 pkg.isExtractNativeLibrariesRequested(),
                 pkg.isDebuggable(),
-                pageSizeCompatDisabled
+                pageSizeCompatDisabled, pkg.getPackageName()
         );
     }
 
