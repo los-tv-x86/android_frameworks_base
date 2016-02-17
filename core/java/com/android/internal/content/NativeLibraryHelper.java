@@ -86,6 +86,7 @@ public class NativeLibraryHelper {
         final boolean multiArch;
         final boolean extractNativeLibs;
         final boolean debuggable;
+        final String pkgName;
 
         final boolean pageSizeCompatDisabled;
 
@@ -104,12 +105,12 @@ public class NativeLibraryHelper {
             boolean isPageSizeCompatDisabled = lite.getPageSizeCompat()
                     == ApplicationInfo.PAGE_SIZE_APP_COMPAT_FLAG_MANIFEST_OVERRIDE_DISABLED;
             return create(lite.getAllApkPaths(), lite.isMultiArch(), lite.isExtractNativeLibs(),
-                    lite.isDebuggable(), isPageSizeCompatDisabled);
+                    lite.isDebuggable(), isPageSizeCompatDisabled, lite.getPackageName());
         }
 
         public static Handle create(List<String> codePaths, boolean multiArch,
-                boolean extractNativeLibs, boolean debuggable, boolean isPageSizeCompatDisabled)
-                throws IOException {
+                boolean extractNativeLibs, boolean debuggable, boolean isPageSizeCompatDisabled,
+                String pkgName) throws IOException {
             final int size = codePaths.size();
             final String[] apkPaths = new String[size];
             final long[] apkHandles = new long[size];
@@ -127,7 +128,7 @@ public class NativeLibraryHelper {
             }
 
             return new Handle(apkPaths, apkHandles, multiArch, extractNativeLibs, debuggable,
-                    isPageSizeCompatDisabled);
+                    isPageSizeCompatDisabled, pkgName);
         }
 
         public static Handle createFd(PackageLite lite, FileDescriptor fd) throws IOException {
@@ -142,17 +143,20 @@ public class NativeLibraryHelper {
                     == ApplicationInfo.PAGE_SIZE_APP_COMPAT_FLAG_MANIFEST_OVERRIDE_DISABLED;
 
             return new Handle(new String[]{path}, apkHandles, lite.isMultiArch(),
-                    lite.isExtractNativeLibs(), lite.isDebuggable(), isPageSizeCompatDisabled);
+                    lite.isExtractNativeLibs(), lite.isDebuggable(), isPageSizeCompatDisabled,
+                    lite.getPackageName());
         }
 
         Handle(String[] apkPaths, long[] apkHandles, boolean multiArch,
-                boolean extractNativeLibs, boolean debuggable, boolean isPageSizeCompatDisabled) {
+                boolean extractNativeLibs, boolean debuggable, boolean isPageSizeCompatDisabled,
+                String pkgName) {
             this.apkPaths = apkPaths;
             this.apkHandles = apkHandles;
             this.multiArch = multiArch;
             this.extractNativeLibs = extractNativeLibs;
             this.debuggable = debuggable;
             this.pageSizeCompatDisabled = isPageSizeCompatDisabled;
+            this.pkgName = pkgName;
             mGuard.open("close");
         }
 
@@ -234,7 +238,13 @@ public class NativeLibraryHelper {
     public static int findSupportedAbi(Handle handle, String[] supportedAbis) {
         int finalRes = NO_NATIVE_LIBRARIES;
         for (long apkHandle : handle.apkHandles) {
-            final int res = nativeFindSupportedAbi(apkHandle, supportedAbis);
+            int res;
+            if (true) {
+                res = nativeFindSupportedAbiReplace(apkHandle, supportedAbis, handle.pkgName);
+            } else {
+                res = nativeFindSupportedAbi(apkHandle, supportedAbis);
+            }
+
             if (res == NO_NATIVE_LIBRARIES) {
                 // No native code, keep looking through all APKs.
             } else if (res == INSTALL_FAILED_NO_MATCHING_ABIS) {
@@ -257,6 +267,9 @@ public class NativeLibraryHelper {
     }
 
     private native static int nativeFindSupportedAbi(long handle, String[] supportedAbis);
+
+    private native static int nativeFindSupportedAbiReplace(long handle, String[] supportedAbis,
+            String pkgName);
 
     // Convenience method to call removeNativeBinariesFromDirLI(File)
     public static void removeNativeBinariesLI(String nativeLibraryPath) {
