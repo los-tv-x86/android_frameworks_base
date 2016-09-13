@@ -435,7 +435,7 @@ public class InputManagerService extends IInputManager.Stub
     /** Switch code: Headphone/Microphone Jack.  When set, something is inserted. */
     public static final int SW_JACK_PHYSICAL_INSERT = 0x07;
 
-    /** Switch code: Video Jack.  When set, something is inserted. */
+    /** Switch code: Video out jack.  When set, something is inserted. */
     public static final int SW_VIDEOOUT_INSERT = 0x08;
 
     /** Switch code: Camera lens cover. When set the lens is covered. */

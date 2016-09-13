@@ -24,6 +24,8 @@ import static com.android.server.input.InputManagerService.SW_VIDEOOUT_INSERT;
 import static com.android.server.input.InputManagerService.SW_VIDEOOUT_INSERT_BIT;
 import static com.android.server.input.InputManagerService.SW_MICROPHONE_INSERT;
 import static com.android.server.input.InputManagerService.SW_MICROPHONE_INSERT_BIT;
+import static com.android.server.input.InputManagerService.SW_VIDEOOUT_INSERT;
+import static com.android.server.input.InputManagerService.SW_VIDEOOUT_INSERT_BIT;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -219,7 +221,7 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
     public void notifyWiredAccessoryChanged(
             long whenNanos, int switchValues, int switchMask, boolean isSynchronous) {
         if (LOG) {
-            Slog.v(TAG, "notifyWiredAccessoryChanged: when=" + whenNanos
+            Slog.i(TAG, "notifyWiredAccessoryChanged: when=" + whenNanos
                     + " bits=" + switchCodeToString(switchValues, switchMask)
                     + " mask=" + Integer.toHexString(switchMask));
         }
@@ -405,7 +407,7 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
             }
 
             if (LOG) {
-                Slog.v(TAG, "headsetNameAddr: " + headsetNameAddr +
+                Slog.i(TAG, "headsetNameAddr: " + headsetNameAddr +
                         (state == 1 ? " connected" : " disconnected"));
             }
 
@@ -430,6 +432,14 @@ final class WiredAccessoryManager implements WiredAccessoryCallbacks {
         if ((switchMask & SW_MICROPHONE_INSERT_BIT) != 0 &&
                 (switchValues & SW_MICROPHONE_INSERT_BIT) != 0) {
             sb.append("SW_MICROPHONE_INSERT");
+        }
+        if ((switchMask & SW_LINEOUT_INSERT_BIT) != 0 &&
+                (switchValues & SW_LINEOUT_INSERT_BIT) != 0) {
+            sb.append("SW_LINEOUT_INSERT ");
+        }
+        if ((switchMask & SW_VIDEOOUT_INSERT_BIT) != 0 &&
+                (switchValues & SW_VIDEOOUT_INSERT_BIT) != 0) {
+            sb.append("SW_VIDEOOUT_INSERT ");
         }
         return sb.toString();
     }
