@@ -865,6 +865,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
                 case RESTART:
                     addIfShouldShowAction(tempActions, restartAction);
                     break;
+                case SLEEP:
+                    addIfShouldShowAction(tempActions, new SleepAction());
+                    break;
                 case SCREENSHOT:
                     UiModeManager uiModeManager =
                             (UiModeManager) mContext.getSystemService(Context.UI_MODE_SERVICE);
@@ -1207,6 +1210,33 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
     }
 
     @VisibleForTesting
+    private final class SleepAction extends SinglePressAction implements LongPressAction {
+        private SleepAction() {
+            super(R.drawable.ic_restart, R.string.global_action_sleep);
+        }
+
+        @Override
+        public boolean onLongPress() {
+            mContext.getSystemService(PowerManager.class).goToSleep(SystemClock.uptimeMillis());
+            return true;
+        }
+
+        @Override
+        public boolean showDuringKeyguard() {
+            return true;
+        }
+
+        @Override
+        public boolean showBeforeProvisioning() {
+            return true;
+        }
+
+        @Override
+        public void onPress() {
+            mContext.getSystemService(PowerManager.class).goToSleep(SystemClock.uptimeMillis());
+        }
+    }
+
     final class RestartAction extends SinglePressAction implements LongPressAction {
         RestartAction() {
             super(com.android.systemui.res.R.drawable.ic_global_actions_restart,
