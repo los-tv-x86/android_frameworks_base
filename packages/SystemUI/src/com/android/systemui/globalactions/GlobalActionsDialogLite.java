@@ -1217,7 +1217,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         @Override
         public boolean onLongPress() {
-            mContext.getSystemService(PowerManager.class).goToSleep(SystemClock.uptimeMillis());
+            mContext.getSystemService(PowerManager.class).goToSleep(SystemClock.uptimeMillis(),
+                    PowerManager.GO_TO_SLEEP_REASON_SLEEP_BUTTON,
+                    PowerManager.GO_TO_SLEEP_FLAG_NO_DOZE);
             return true;
         }
 
@@ -1233,7 +1235,9 @@ public class GlobalActionsDialogLite implements DialogInterface.OnDismissListene
 
         @Override
         public void onPress() {
-            mContext.getSystemService(PowerManager.class).goToSleep(SystemClock.uptimeMillis());
+            mContext.getSystemService(PowerManager.class).goToSleep(SystemClock.uptimeMillis(),
+                    PowerManager.GO_TO_SLEEP_REASON_SLEEP_BUTTON,
+                    PowerManager.GO_TO_SLEEP_FLAG_NO_DOZE);
         }
     }
 
